@@ -208,6 +208,7 @@ this block of code is call the function.
 **Note**: spend enough time on this so you become familiar with it and it 
 doesn't feel weird. It's **very** important you understand this.
 
+**Note**: the task can be completed using only two of the mentioned methods. One is plainly unsuitable for the task!
 
 ### Files
 
@@ -240,7 +241,7 @@ stream (that stream is usually connected to the console). Read more about cerr
 [here](http://www.cplusplus.com/reference/iostream/cerr/). We also return some
 other value that is not zero (zero usually means *all OK*).
 
-If, on the other hand, the file stream is opened, we can continue to use it.ž
+If, on the other hand, the file stream is opened, we can continue to use it.
 Let's assume that file `filename.txt` contains some integer numbers. Then we 
 can read those numbers in a loop with an extraction operator `>>`.
 
@@ -306,142 +307,7 @@ operator `<< `. We do that in a loop, waiting for user to enter a zero.
 
 #### Binary files
 
-And the last thing to learn today is to look at binary files. Up to now we only
-worked with text files: each byte in a file represents a character according
-to an [ASCII table](http://www.asciitable.com/) (files can have other encodings,
-such as [utf-8](http://www.utf-8.com/), but we'll keep it simple and explain 
-just for ASCII files). So, when you want to store a number, say `42` in a text file
-it will consume `2 bytes`: one for `4` and one for `2`. 
-
-When you want to store that same number in a binary file, you store all of the bytes
-for a given type. And if we use and `int` to store the `42`, then we use `4` bytes 
-(on most platforms an `int` is `4` bytes). 
-
-``` c++ Writing numbers from 16 to 42 in a binary file
-	ofstream dat_out_bin("numbers.dat", ios_base::binary);
-
-	if (!dat_out_bin) {
-		cerr << "Error creating file 'numbers.dat'" << endl;
-		return 3;
-	}
-
-	// write some numbers
-	for (int i = 16; i <= 42; ++i) {
-		const char *from_addr = reinterpret_cast<const char *>(&i);
-		dat_out_bin.write(from_addr, sizeof(int));
-	}
-```
-
-Again the usual opening and checking. After that we loop for numbers from 16 to 42
-and write their binary representation to the file. 
-
-C++ has rather limiting support for writing bytes to a stream: 
-it *always* wants a pointer to constant character and a number of bytes. 
-We get number of bytes with operator `sizeof`, and we can always force the C++ 
-compiler to **reinterpret** some memory for us. That's what the line 10 does:
-it reinterprets the address of an integer variable `&i` as an address of an 
-`const char*` variable.
-
-Rather good and detailed article is [here](http://www.cplusplus.com/articles/DzywvCM9/).
-
-We read that same file ### Files
-
-Files are a cornerstone of computers and data: everything you want to somehow 
-store and preserve you write to a file. There are many, many ways to go 
-about creating and reading files, so we'll cover just the essentials here.
-
-#### Reading from files
-When working with files is C++ you must `#ınclude <fstream>`. You access a file
-in the filesystem by creating a variable of type `ifstream` for reading files
-and of type `ofstream` for writing to file.
-
-``` c++ Opening a file
-	// reading files
-	ifstream dat_in("filename.txt");
-
-	if (!dat_in) {
-		cerr << "Error opening 'filename.txt'" << endl;
-		return 1;
-	}
-
-	// read from file
-```
-
-We first create a variable named `dat_in` which we then use to **test** if 
-the binding to actual file succedded with `if (!dat_in)`. If the file
-is not succesfully opened, we can't continue (we have no file to read from).
-In that case we inform the caller by writng an error message to the error 
-stream (that stream is usually connected to the console). Read more about cerr 
-[here](http://www.cplusplus.com/reference/iostream/cerr/). We also return some
-other value that is not zero (zero usually means *all OK*).
-
-If, on the other hand, the file stream is opened, we can continue to use it.ž
-Let's assume that file `filename.txt` contains some integer numbers. Then we 
-can read those numbers in a loop with an extraction operator `>>`.
-
-``` c++ Reading integers from a file
-	while (!dat_in.eof()) {
-		int value;
-		dat_in >> value;
-
-		cout << value << ' ';
-	}
-```
-
-The test in the `while` checks if the file is at the and. If it's **not** then the
-body of the *while* is executed. It declares a variable (a piece of memory) in
-which to store the number which it reads in the next line with the operator `>>`.
-
-Just for show, we output what we got from file (plus a space). 
-
-The fact of reading from a file moves the *file pointer* a few bytes forward. With 
-that happening in a loop, eventually we'll read whole of the file and reach it's end.
-When that happens `dat_in.eof()` will return `true` and the loop will finish.
-
-### Coding challenge
-Suppose you have a file of **real** numbers (create one if you don't). Write a 
-function  that accepts a filename as a parameter and reads its's contents outputing 
-every value in it's own row. 
-
-Watch out for differences in representing real numbers as strings: 
-some have a dot `.`, and some have a comma `,` separating the decimals. C++ will 
-accept only dots.
-
-
-#### Writing to files
-
-Writing to a file is similar to reading from it, it's just accepting new values
-instead of giving out values.
-
-``` c++ Write to a file
-	ofstream dat_out("fileout.txt");
-
-	if (!dat_out) {
-		cerr << "Error creating 'fileout.txt'" << endl;
-		return 2;
-	}
-
-	int num;
-	do {
-		cout << "Enter an integer: ";
-		cin >> num;
-
-		if (num != 0) {
-			dat_out << num << ' ';
-		}
-	} while (num != 0);
-```
-
-We go through the same ritual as we did when opening a file: create a variable,
-bind it to a file and check if that succedded.
-
-After that, we prepare a variable to read from console, notify the user of 
-what we want him to do (enter an integer, please), and write it to file using
-operator `<< `. We do that in a loop, waiting for user to enter a zero.
-
-#### Binary files
-
-And the last thing to learn today is to look at binary files. Up to now we only
+And the last thing to learn in this post is to look at binary files. Up to now we only
 worked with text files: each byte in a file represents a character according
 to an [ASCII table](http://www.asciitable.com/) (files can have other encodings,
 such as [utf-8](http://www.utf-8.com/), but we'll keep it simple and explain 
